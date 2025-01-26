@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
 import '../../global.css';
 
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper'
 import theme from '~/constants/Theme';
+import appConfig from '~/stores/AppConfigStore';
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -11,6 +13,9 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
+  useEffect(() => {
+    appConfig.initialize()
+  }, [])
 
   return (
     <PaperProvider theme={theme}>
