@@ -13,7 +13,7 @@ const MenuItem = ({title, icon, onPress}: MenuItemPropsType) => {
   return (
     <Pressable 
       onPress={onPress}
-      className='bg-green-100 gap-2 p-3 items-center rounded-md shadow-sm' 
+      className='bg-green-100 gap-2 p-3 items-center rounded-md shadow-md' 
       style={{width: '30%'}}
     >
       <MaterialCommunityIcons

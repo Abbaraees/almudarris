@@ -20,9 +20,10 @@ export default function RootLayout() {
   return (
     <PaperProvider theme={theme}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack>
-          <Stack.Screen name='auth' options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name='auth' />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name='students' />
           <Stack.Screen name="modal" options={{ title: 'Modal', presentation: 'modal' }} />
         </Stack>
       </GestureHandlerRootView>

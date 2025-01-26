@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { View, Image, Text, StyleSheet, Pressable } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
@@ -22,13 +22,13 @@ export default function Home() {
           />
         </View>
 
-        <View className='mt-4 bg-white p-2 rounded-md'>
+        <View className='mt-4 bg-gray-50 p-2 rounded-md'>
           <Text className='text-lg font-semibold'>Menu</Text>
           <View className='flex flex-row gap-4 my-1 justify-around'>
             <MenuItem
               title='Students'
               icon='account-multiple'
-              onPress={() => {}}
+              onPress={() => {router.push('/(tabs)/students')}}
             />
             <MenuItem
               title='Attendance'

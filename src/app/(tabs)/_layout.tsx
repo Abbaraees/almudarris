@@ -16,6 +16,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="students"
+        options={{
+          title: 'Students',
+          tabBarIcon: ({ color }) => <TabBarIcon name="account-multiple" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="two"
         options={{
           title: 'Profile',
