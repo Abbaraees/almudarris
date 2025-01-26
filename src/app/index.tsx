@@ -4,17 +4,7 @@ import { Redirect, Stack, router } from 'expo-router'
 import { Button } from 'react-native-paper'
 
 const index = () => {
-  const alreadySignedUp = false
-
-  const navigateToAuth = () => {
-    if (alreadySignedUp) {
-      router.push('/auth/login')
-    } else {
-      router.push('/auth/signup')
-    }
-  }
-
- 
+  const alreadySignedUp = true
   
   return (
     <>
@@ -31,9 +21,16 @@ const index = () => {
         <Button 
           mode='contained' 
           className='mt-24 w-full'
-          onPress={navigateToAuth}
+          onPress={() => router.push('/auth/signup')}
         >
           Get Started
+        </Button>
+        <Button 
+          mode='elevated' 
+          className='mt-4 w-full'
+          onPress={() => router.push('/auth/login')}
+        >
+          Login
         </Button>
       </View>
     </>

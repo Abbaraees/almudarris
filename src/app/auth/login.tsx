@@ -11,7 +11,7 @@ const login = () => {
   const [store, _] = useState(new LoginUIStore())
 
   if (store.loginSuccess) {
-    router.push('/(drawer)/(tabs)')
+    router.push('/(tabs)')
   }
 
   return (
