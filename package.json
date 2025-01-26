@@ -22,6 +22,7 @@
     "expo": "^52.0.27",
     "expo-async-storage": "^0.0.0",
     "expo-constants": "~17.0.4",
+    "expo-dev-client": "~5.0.10",
     "expo-image-picker": "~16.0.4",
     "expo-linking": "~7.0.4",
     "expo-router": "~4.0.6",
