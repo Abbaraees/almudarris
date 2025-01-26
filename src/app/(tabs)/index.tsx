@@ -9,12 +9,12 @@ import MenuItem from '~/components/MenuItem';
 export default function Home() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Dashboard' }} />
+      <Stack.Screen options={{ title: 'Al-Mudarris (The Teacher)' }} />
       <Container>
-        <View className='w-full bg-green-500 flex-row justify-between px-2 py-4 rounded-lg shadow-sm'>
+        <View className='w-full bg-green-700 flex-row justify-between px-2 py-4 rounded-lg shadow-sm'>
           <View className='justify-center gap-2'>
-            <Text className='text-lg text-white font-semibold'>{appConfig.fullname}</Text>
-            <Text className='text-white font-semibold'>Ansarul Islam | Class 1</Text>
+            <Text className='text-xl text-white font-semibold'>{appConfig.fullname}</Text>
+            <Text className='text-lg text-white font-semibold'>Ansarul Islam | Class 1</Text>
           </View>
           <Image
             source={require('@assets/images/teacher.png')}
@@ -22,9 +22,9 @@ export default function Home() {
           />
         </View>
 
-        <View className='mt-4 bg-gray-50 p-2 rounded-md'>
-          <Text className='text-lg font-semibold'>Menu</Text>
-          <View className='flex flex-row gap-4 my-1 justify-around'>
+        <View className='mt-4 bg-gray-100 p-2 rounded-md'>
+          <Text className='text-2xl font-semibold my-2'>Menu</Text>
+          <View className='flex flex-row my-1 justify-between'>
             <MenuItem
               title='Students'
               icon='account-multiple'
@@ -54,6 +54,6 @@ const styles = StyleSheet.create({
   image: {
     width: 80,
     height: 80,
-    borderRadius: 40
+    borderRadius: 40  
   },
 })
