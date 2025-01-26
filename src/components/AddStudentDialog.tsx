@@ -9,9 +9,8 @@ type AddStudentDialogPropsType = {
   onDone: () => void,
   onDismiss: () => void,
   onNameChange: (name: string) => void,
-  onGenderChange: (gender: string) => void
+  onGenderChange: (gender: 'male' | 'female') => void
 }
-
 
 const AddStudentDialog = ({onDone, onDismiss, onNameChange, onGenderChange}: AddStudentDialogPropsType) => {
   return (

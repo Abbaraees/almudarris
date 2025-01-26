@@ -1,15 +1,14 @@
 import { router, Stack } from 'expo-router';
 import { View, Image, Text, StyleSheet, Pressable } from 'react-native';
-import { Surface } from 'react-native-paper';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
 import { Container } from '~/components/Container';
 import appConfig from '~/stores/AppConfigStore';
 import MenuItem from '~/components/MenuItem';
+import React from 'react';
 
 export default function Home() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Al-Mudarris (The Teacher)' }} />
+      <Stack.Screen options={{ title: 'Home', headerTitle: 'Al-Mudarris (The Teacher)' }} />
       <Container>
         <View className='w-full bg-green-700 flex-row justify-between px-2 py-4 rounded-lg shadow-sm'>
           <View className='justify-center gap-2'>

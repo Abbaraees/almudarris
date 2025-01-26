@@ -14,15 +14,23 @@ const students = () => {
         label='Search for students'
         mode='outlined'
         style={{marginBottom: 8, width: '80%', marginLeft: 'auto'}}
+        onChangeText={studentsUIStore.setSearch}
       />
-      <FlatList
-        data={Array(20).fill(0)}
-        renderItem={({index}) => (
-          <Pressable key={index} className='py-4 border-b border-gray-400'>
-            <Text className='text-lg'>Student {index + 1}</Text>
+      { studentsUIStore.filteredStudents.length > 0 ? (
+        <FlatList
+        data={studentsUIStore.filteredStudents}
+        renderItem={({item}) => (
+          <Pressable key={item.id} className='py-4 border-b border-gray-400'>
+            <Text className='text-lg'>{item.name}</Text>
           </Pressable>
         )}
       />
+      ) : (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text className='text-2xl text-green-700 '>No students found</Text>
+        </View>
+      )}
+      
       <FAB
         icon='plus'
         onPress={studentsUIStore.toggleDialog}
