@@ -32,7 +32,7 @@ export default function Home() {
             <MenuItem
               title='Attendance'
               icon='calendar'
-              onPress={() => {}}
+              onPress={() => {router.push('/(tabs)/attendace')}}
             />
             <MenuItem
               title='Assessments'
