@@ -77,9 +77,15 @@ class AuthStore {
         this.authError = false;
         this.profile = data;
       }
-      console.log("Profile", data)
     }
 
+  }
+
+  logout() {
+    // Logout logic here
+    supabase.auth.signOut();
+    this.session = null;
+    this.profile = null;
   }
 }
 

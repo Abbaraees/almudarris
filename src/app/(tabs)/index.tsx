@@ -5,17 +5,18 @@ import appConfig from '~/stores/AppConfigStore';
 import MenuItem from '~/components/MenuItem';
 import React from 'react';
 import authStore from '~/stores/AuthStore';
+import { observer } from 'mobx-react';
 
-export default function Home() {
-  const profile = authStore.profile
+function Home() {
+  
   return (
     <>
       <Stack.Screen options={{ title: 'Home', headerTitle: 'Al-Mudarris (The Teacher)' }} />
       <Container>
         <View className='w-full bg-green-700 flex-row justify-between px-2 py-4 rounded-lg shadow-sm'>
           <View className='justify-center gap-2 w-[70%]'>
-            <Text className='text-xl text-white font-semibold'>{profile?.full_name}</Text>
-            <Text className='text text-white'>{profile?.school_name} | {profile?.class_name}</Text>
+            <Text className='text-xl text-white font-semibold'>{authStore.profile?.full_name}</Text>
+            <Text className='text text-white'>{authStore.profile?.school_name} | {authStore.profile?.class_name}</Text>
           </View>
           <Image
             source={require('@assets/images/teacher.png')}
@@ -49,6 +50,8 @@ export default function Home() {
     </>
   );
 }
+
+export default observer(Home);
 
 const styles = StyleSheet.create({
 

@@ -2,9 +2,9 @@ import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { Redirect, Stack, router } from 'expo-router'
 import { Button } from 'react-native-paper'
+import { observer } from 'mobx-react'
 
-const index = () => {
-  const alreadySignedUp = true
+function index(){
   
   return (
     <>
@@ -37,4 +37,4 @@ const index = () => {
   )
 }
 
-export default index
+export default observer(index)
