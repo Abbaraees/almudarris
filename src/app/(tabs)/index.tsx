@@ -4,16 +4,18 @@ import { Container } from '~/components/Container';
 import appConfig from '~/stores/AppConfigStore';
 import MenuItem from '~/components/MenuItem';
 import React from 'react';
+import authStore from '~/stores/AuthStore';
 
 export default function Home() {
+  const profile = authStore.profile
   return (
     <>
       <Stack.Screen options={{ title: 'Home', headerTitle: 'Al-Mudarris (The Teacher)' }} />
       <Container>
         <View className='w-full bg-green-700 flex-row justify-between px-2 py-4 rounded-lg shadow-sm'>
-          <View className='justify-center gap-2'>
-            <Text className='text-xl text-white font-semibold'>{appConfig.fullname}</Text>
-            <Text className='text-lg text-white font-semibold'>Ansarul Islam | Class 1</Text>
+          <View className='justify-center gap-2 w-[70%]'>
+            <Text className='text-xl text-white font-semibold'>{profile?.full_name}</Text>
+            <Text className='text text-white'>{profile?.school_name} | {profile?.class_name}</Text>
           </View>
           <Image
             source={require('@assets/images/teacher.png')}
@@ -32,7 +34,7 @@ export default function Home() {
             <MenuItem
               title='Attendance'
               icon='calendar'
-              onPress={() => {router.push('/(tabs)/attendace')}}
+              onPress={() => {router.push('/(tabs)/attendance')}}
             />
             <MenuItem
               title='Assessments'

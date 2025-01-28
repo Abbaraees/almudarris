@@ -1,8 +1,10 @@
 import { View, Text, Pressable, KeyboardAvoidingView } from 'react-native'
 import React, { useState } from 'react'
-import { Avatar, Button, Checkbox, TextInput } from 'react-native-paper'
+import { ActivityIndicator, Avatar, Button, Checkbox, Modal, Portal, TextInput } from 'react-native-paper'
 import { SignupUIStore } from '~/stores/ui/SignupUIStore'
 import { observer } from 'mobx-react'
+import AlertBox from '~/components/AlertBox'
+import authStore from '~/stores/AuthStore'
 
 const signup = () => {
   const [store, _] = useState(new SignupUIStore())
@@ -12,7 +14,21 @@ const signup = () => {
       behavior='padding'
       className='flex flex-1 bg-white  items-center p-4'
     >
-      <Text className='text-green-700 text-2xl mt-1 font-semibold'>Setup your Device</Text>
+      {store.signupError && (
+        <AlertBox 
+          title='Signup Failed' 
+          message={store.errorMessage}
+          onDismiss={store.clearError}
+        />
+      )}
+      { authStore.isAuthenticating && (
+        <Portal>
+          <Modal visible>
+            <ActivityIndicator animating={true} size='large' />
+          </Modal>
+        </Portal>
+      )}
+      <Text className='text-green-700 text-2xl mt-1 font-semibold'>Create New Account</Text>
       <Avatar.Image
         source={require('@assets/images/teacher.png')}
         size={150}
@@ -27,10 +43,10 @@ const signup = () => {
           mode='outlined'
         />
         <TextInput
-          value={store.username}
-          onChangeText={store.setUsername}
-          placeholder='Enter Your Username'
-          label="Username"
+          value={store.email}
+          onChangeText={store.setEmail}
+          placeholder='Enter your email'
+          label="Email"
           mode='outlined'
         />
         
@@ -48,22 +64,12 @@ const signup = () => {
           label="Class Name"
           mode='outlined'
         />
-        <Pressable
-          className='flex-row items-center'
-          onPress={store.togglePassword}
-        >
-          <Checkbox
-            status={store.enablePassword ? 'checked' : 'unchecked'}
-          />
-          <Text>Enable password-based login</Text>
-        </Pressable>
         <TextInput
           value={store.password}
           onChangeText={store.setPassword}
           placeholder='Enter Your Login Password'
           label="Password"
           mode='outlined'
-          disabled={!store.enablePassword}
           secureTextEntry
         />
         <TextInput
@@ -72,7 +78,6 @@ const signup = () => {
           placeholder='Repeat Your Login Password'
           label="Confirm Login Password"
           mode='outlined'
-          disabled={!store.enablePassword}
           secureTextEntry
         />
         <Button

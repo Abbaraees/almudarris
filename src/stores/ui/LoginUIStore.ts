@@ -1,7 +1,11 @@
 import { makeAutoObservable } from 'mobx'
+import authStore from '../AuthStore'
+import { router } from 'expo-router'
 
 export class LoginUIStore {
 
+  authStore = authStore
+  email = ''
   password = ''
   loginSuccess = false
   loginError = false
@@ -10,18 +14,21 @@ export class LoginUIStore {
 
   constructor() {
     makeAutoObservable(this)
+    this.loginError = authStore.authError
+    this.errorMessage = authStore.errorMessage
   }
 
 
-  login = () => {
-    if (this.password.length < 8) {
-      this.errorMessage = 'Incorrect Password'
+  login = async () => {
+    this.clearError()
+    const success = await authStore.login(this.email, this.password)
+    if (success) {
+      this.loginSuccess = true
+      router.replace('/(tabs)')
+    } else {
       this.loginError = true
-
-      return
+      this.errorMessage = authStore.errorMessage
     }
-
-    this.loginSuccess = true
   }
 
   clearError = () => {
@@ -31,5 +38,6 @@ export class LoginUIStore {
 
 
   setPassword = (password: string) => this.password = password
+  setEmail = (email: string) => this.email = email
 
 }

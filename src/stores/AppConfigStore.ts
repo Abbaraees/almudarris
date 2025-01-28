@@ -3,7 +3,7 @@ import { makeAutoObservable } from "mobx";
 class AppConfigStore {
   accountExists = false
   skipOnboarding = false
-  username = ''
+  email = ''
   fullname = ''
 
   constructor() {
@@ -15,7 +15,7 @@ class AppConfigStore {
 
   initialize = () => {
     this.accountExists = true
-    this.username = 'abbaraees'
+    this.email = 'abbaraees'
     this.fullname = 'Muhammad Lawal'
 
   }

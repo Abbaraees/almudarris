@@ -1,8 +1,13 @@
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 
 import { TabBarIcon } from '~/components/TabBarIcon';
+import authStore from '~/stores/AuthStore';
 
 export default function TabLayout() {
+  if (authStore.session === null) {
+    return <Redirect href={'/auth/login'} />;
+  }
+  
   return (
     <Tabs
       screenOptions={{
@@ -26,7 +31,7 @@ export default function TabLayout() {
         name="attendance"
         options={{
           title: 'Attendance',
-          tabBarIcon: ({ color }) => <TabBarIcon name="calendar-outline" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
         }}
       />
       <Tabs.Screen
