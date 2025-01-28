@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx"
 import uuid from 'react-native-uuid'
 
 import { Student } from "~/types"
-import StudentStore from "../domain/StudentStore"
+import studentStore  from "../domain/StudentStore"
 
 
 class StudentsUIStore {
@@ -11,7 +11,7 @@ class StudentsUIStore {
   newStudentGender: 'male' | 'female' = 'male'
   isAdding = false
   search = ''
-  studentStore: StudentStore = new StudentStore()
+  studentStore = studentStore
 
   constructor() {
     makeAutoObservable(this)

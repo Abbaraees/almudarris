@@ -26,7 +26,7 @@ export default function TabLayout() {
         name="attendance"
         options={{
           title: 'Attendance',
-          tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="calendar-outline" color={color} />,
         }}
       />
       <Tabs.Screen

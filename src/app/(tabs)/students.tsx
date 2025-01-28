@@ -20,7 +20,11 @@ const students = () => {
         <FlatList
         data={studentsUIStore.filteredStudents}
         renderItem={({item}) => (
-          <Pressable key={item.id} className='py-4 border-b border-gray-400'>
+          <Pressable 
+            key={item.id} 
+            className='py-4 border-b border-gray-400'
+            onPress={() => router.push(`/students/${item.id}`)}
+          >
             <Text className='text-lg'>{item.name}</Text>
           </Pressable>
         )}
