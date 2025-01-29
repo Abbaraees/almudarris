@@ -1,23 +1,24 @@
 import { makeAutoObservable } from "mobx"
 import uuid from 'react-native-uuid'
 
-import { Student } from "~/types"
+import { Student, Tables } from "~/types"
 import studentStore  from "../domain/StudentStore"
 
 
 class StudentsUIStore {
-  filteredStudents: Student[] = []
+  filteredStudents: Tables<'students'>[] = []
   newStudentName = ''
   newStudentGender: 'male' | 'female' = 'male'
   isAdding = false
   search = ''
   studentStore = studentStore
+  students: Tables<'students'>[] = []
 
   constructor() {
     makeAutoObservable(this)
-    this.filterStudents()
   }
 
+  setStudents = (students: Tables<'students'>[]) => this.students = students
   setNewStudentName = (name: string) => this.newStudentName = name
   setNewStudentGender = (gender: 'male' | 'female') => this.newStudentGender = gender
   toggleDialog = () => this.isAdding = !this.isAdding
@@ -27,7 +28,7 @@ class StudentsUIStore {
   }
 
   filterStudents = () => {
-    this.filteredStudents = this.studentStore.students.filter((student) => {
+    this.filteredStudents = this.students.filter((student) => {
       return student.name.toLocaleLowerCase().includes(this.search.toLocaleLowerCase())
     })
   }

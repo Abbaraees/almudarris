@@ -21,7 +21,7 @@
     "icon": "./assets/images/teacher.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/splash_image.png",
+      "image": "./assets/images/teacher.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
