@@ -92,28 +92,28 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
-          class_name: string
+          class_name: string | null
           full_name: string | null
           id: string
-          school_name: string
+          school_name: string | null
           updated_at: string | null
           username: string | null
         }
         Insert: {
           avatar_url?: string | null
-          class_name: string
+          class_name?: string | null
           full_name?: string | null
           id: string
-          school_name: string
+          school_name?: string | null
           updated_at?: string | null
           username?: string | null
         }
         Update: {
           avatar_url?: string | null
-          class_name?: string
+          class_name?: string | null
           full_name?: string | null
           id?: string
-          school_name?: string
+          school_name?: string | null
           updated_at?: string | null
           username?: string | null
         }
@@ -160,30 +160,24 @@ export type Database = {
       }
       students: {
         Row: {
-          avatar_url: string | null
           created_at: string
           gender: string
           id: string
           name: string
-          student_id: string | null
           teacher_id: string | null
         }
         Insert: {
-          avatar_url?: string | null
           created_at?: string
           gender: string
           id?: string
           name: string
-          student_id?: string | null
           teacher_id?: string | null
         }
         Update: {
-          avatar_url?: string | null
           created_at?: string
           gender?: string
           id?: string
           name?: string
-          student_id?: string | null
           teacher_id?: string | null
         }
         Relationships: [
