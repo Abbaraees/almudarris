@@ -6,20 +6,17 @@ import { router, useFocusEffect } from 'expo-router'
 import studentsUIStore from '~/stores/ui/StudentsUIStore'
 import { observer } from 'mobx-react'
 import AddStudentDialog from '~/components/AddStudentDialog'
-import { useInsertStudent, useStudentList } from '../api/students'
+import { useInsertStudent, useStudentList } from '../../api/students'
 import authStore from '~/stores/AuthStore'
+import studentStore from '~/stores/domain/StudentStore'
 
 const students = () => {
 
-  const { data, error, isLoading, refetch } = useStudentList()
-  const { mutate: insertStudent, isPending: isAdding } = useInsertStudent()
-  const { profile } = authStore
+  // const { mutate: insertStudent, isPending: isAdding } = useInsertStudent()
+  // const { profile } = authStore
 
   useFocusEffect(useCallback(() => {
-    if (!error && !isLoading && data) {
-      studentsUIStore.setStudents(data)
-      studentsUIStore.filterStudents()
-    }
+   studentsUIStore.filterStudents()
   }, []))
 
   return (
@@ -30,30 +27,30 @@ const students = () => {
         style={{marginBottom: 8, width: '80%', marginLeft: 'auto'}}
         onChangeText={studentsUIStore.setSearch}
       />
-      { isAdding && (
+      {/* { isAdding && (
         <Portal>
           <Modal visible>
             <ActivityIndicator animating size={'large'} color='green' />
           </Modal>
         </Portal>
-      )}
+      )} */}
       {
-        isLoading ? (
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <ActivityIndicator size='large' color='green' animating/>
-          </View>
-        ) : 
+        // isLoading ? (
+        //   <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        //     <ActivityIndicator size='large' color='green' animating/>
+        //   </View>
+        // ) : 
 
-        error ? (
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text className='text-2xl text-red-700'>{error.message}</Text>
-            <Button onPress={useStudentList} mode='contained'>Retry</Button>
-          </View>
-        ) : 
+        // error ? (
+        //   <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        //     <Text className='text-2xl text-red-700'>{error.message}</Text>
+        //     <Button onPress={useStudentList} mode='contained'>Retry</Button>
+        //   </View>
+        // ) : 
       
         studentsUIStore.filteredStudents.length > 0 ? (
           <FlatList
-          data={studentsUIStore.filteredStudents}
+          data={studentStore.students}
           renderItem={({item}) => (
             <Pressable 
               key={item.id} 
@@ -79,16 +76,7 @@ const students = () => {
       {
         studentsUIStore.isAdding && (
           <AddStudentDialog
-            onDone={() => {
-              insertStudent({
-                name: studentsUIStore.newStudentName, 
-                gender: studentsUIStore.newStudentGender,
-                teacher_id: profile?.id
-              }, {
-                onSuccess: () => {refetch()}
-              })
-              studentsUIStore.hideDialog()
-            }}
+            onDone={studentsUIStore.saveStudent}
             onDismiss={studentsUIStore.hideDialog}
             onNameChange={studentsUIStore.setNewStudentName}
             onGenderChange={studentsUIStore.setNewStudentGender}

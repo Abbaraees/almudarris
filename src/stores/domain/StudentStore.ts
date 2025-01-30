@@ -1,20 +1,32 @@
 import { makeAutoObservable } from "mobx";
 import uuid from 'react-native-uuid';
+import { createStudent, getStudent, getStudents } from "~/db/students";
 
-import { Student } from "~/types";
+import { Tables } from "~/types";
 
 
 class StudentStore {
-  students: Student[] = [
-    {id: uuid.v4(), name: 'Muhammad Lawal', gender: 'male'}
-  ];
+  students: Tables<'students'>[] = [];
 
   constructor() {
     makeAutoObservable(this);
+    this.fetchStudents()
   }
 
-  addStudent(student: Student) {
-    this.students = [...this.students, student];
+  fetchStudents = async () => {
+    const students = await getStudents();
+    this.students = students;
+  }
+
+  async addStudent(name: string, gender: 'male' | 'female', teacher_id: string) {
+    try {
+      
+      const result = await createStudent(name, gender, teacher_id);
+      result && this.fetchStudents();
+    } catch (error) {
+      console.log(error)
+    }
+    
   }
 
   removeStudent(id: string) {
@@ -29,8 +41,12 @@ class StudentStore {
     return this.students.length;
   }
 
-  getStudent(id: string) {
-    return this.students.find((student) => student.id == id);
+  async findStudent(id: string) {
+    const student  = await getStudent(id)
+    if (student) {
+      return student[0]
+    }
+    return null;
   }
 }
 

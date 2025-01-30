@@ -4,37 +4,48 @@ import { Container } from '~/components/Container'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { router, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import studentStore from '~/stores/domain/StudentStore'
-import { Student } from '~/types'
-import { IconButton } from 'react-native-paper'
-import StudentDetailUIState from '~/stores/ui/StudentDetailUIState'
+import { Tables } from '~/types'
+import { ActivityIndicator, IconButton } from 'react-native-paper'
+import studentDetailUIState from '~/stores/ui/StudentDetailUIState'
 import { observer } from 'mobx-react'
 
 const StudentDetail = () => {
   const { id } = useLocalSearchParams()
-  const [uiState, _] = useState(new StudentDetailUIState())
+  const [student, setStudent] = useState<Tables<'students'>|null>()
 
   useFocusEffect(useCallback(() => {
     if (typeof id === 'string') {
-      console.log("AAAAAAA")
-      uiState.loadStudent(id)
+      studentDetailUIState.loadStudent(id)
+      const student = studentStore.students.filter(student => student.id == id)
+      if (student) {
+        setStudent(student[0])
+      } else {
+        setStudent(null)
+      }
     }
   }, [id]))
 
 
-  const handleNavigation = (feature) => {
+  const handleNavigation = (feature: string) => {
     router.push(`/students/${id}/${feature}`)
   }
 
   return (
     <>
       <Container>
-        {uiState.student ? (
+        {
+        student === undefined ? (
+          <View className='flex items-center justify-center'>
+            <ActivityIndicator size={'large'} animating />
+          </View>
+        ) :
+        student ? (
           <View>
-            <Stack.Screen options={{ headerTitle: uiState.student ? uiState.student.name : 'Not Found' }} />
-            <View className=" items-center p-4 bg-green-100 rounded-lg mb-4 shadow-md">
+            <Stack.Screen options={{ headerTitle: student ? student.name : 'Not Found' }} />
+            <View className=" items-center p-4 bg-gray-100 rounded-lg mb-4 shadow-md">
                 
-                <MaterialCommunityIcons name='account-circle' size={128} color={'#15803d'}/>
-                <Text className="text-2xl font-bold">{uiState.student.name}</Text>
+                <MaterialCommunityIcons name='account-circle' size={128} color={'#4b5563'}/>
+                <Text className="text-2xl font-bold">{student.name}</Text>
                 <View className='flex-row gap-8'>
                   <IconButton icon={'delete'} iconColor='orange' size={32} />
                   <IconButton icon={'pencil'} iconColor='green' size={32} />
@@ -42,8 +53,8 @@ const StudentDetail = () => {
               
             </View>
             <View className="flex-row flex-wrap justify-between">
-              <Pressable className="w-[48%] p-4 my-2 bg-white rounded-lg items-center justify-center shadow-md" onPress={() => handleNavigation('attendance')}>
-                <MaterialCommunityIcons name="calendar" size={32} color="green" />
+              <Pressable className="w-[48%] p-4 my-2 bg-green-100 rounded-lg items-center justify-center shadow-md" onPress={() => handleNavigation('attendance')}>
+                <MaterialCommunityIcons name="calendar" size={32} color="#16a34a" />
                 <Text className="mt-2 text-lg font-bold">Attendance</Text>
               </Pressable>
               <Pressable className="w-[48%] p-4 my-2 bg-white rounded-lg items-center justify-center shadow-md" onPress={() => handleNavigation('assessments')}>

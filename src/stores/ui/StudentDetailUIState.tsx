@@ -1,9 +1,9 @@
-import { Student } from "~/types";
+import { Student, Tables } from "~/types";
 import studentStore from "../domain/StudentStore";
 import { makeAutoObservable } from "mobx";
 
-export default class StudentDetailUIState {
-  student: Student | undefined
+class StudentDetailUIState {
+  student: Tables<'students'> | undefined | null
   isDeleting = false
   isUpdating = false
 
@@ -11,10 +11,10 @@ export default class StudentDetailUIState {
     makeAutoObservable(this)
   }
 
-  loadStudent = (id: string) => {
-    console.log("student")
-    const student = studentStore.getStudent(id)
-    this.student = student
+  loadStudent = async (id: string) => {
+    const student = studentStore.students.filter(student => student.id == id)
+    console.log(student)
+    this.student = student[0]
   }
 
   showUpdateDialog = () => {
@@ -40,3 +40,6 @@ export default class StudentDetailUIState {
 
   }
 }
+
+const studentDetailUIState = new StudentDetailUIState()
+export default studentDetailUIState

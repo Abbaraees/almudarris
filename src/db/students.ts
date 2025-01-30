@@ -50,3 +50,7 @@ export async function deleteStudent(id: string) {
 export async function getStudents() {
   return await db.select().from(studentsTable)
 }
+
+export async function getStudent(id: string) {
+  return await db.select().from(studentsTable).where(eq(studentsTable.id, id))
+}
