@@ -9,22 +9,27 @@ type AddStudentDialogPropsType = {
   onDone: () => void,
   onDismiss: () => void,
   onNameChange: (name: string) => void,
-  onGenderChange: (gender: 'male' | 'female') => void
+  onGenderChange: (gender: 'male' | 'female') => void,
+  name?: string,
+  gender?: string,
+  isUpdating?: boolean
 }
 
-const AddStudentDialog = ({onDone, onDismiss, onNameChange, onGenderChange}: AddStudentDialogPropsType) => {
+const AddStudentDialog = ({onDone, onDismiss, onNameChange, onGenderChange, isUpdating, name, gender}: AddStudentDialogPropsType) => {
   return (
     <Portal>
       <Modal visible>
         <View className='w-10/12 bg-white p-4 rounded-lg self-center'>
-          <Text className='text-lg text-center mb-6'>Add New Student</Text>
+          <Text className='text-lg text-center mb-6'>{isUpdating ? 'Update Student Info' : `Add New Student`}</Text>
           <TextInput
+            value={name}
             label='Full Name'
             placeholder='Enter full name'
             mode='outlined'
             onChangeText={onNameChange}
             style={{marginBottom: 8, width: '100%'}}
           />
+            
           <Text className='text-lg'>Gender</Text>
           <View className='flex flex-row gap-2 my-2'>
             <Pressable 
@@ -34,7 +39,7 @@ const AddStudentDialog = ({onDone, onDismiss, onNameChange, onGenderChange}: Add
               <RadioButton
                 value='male'
                 onPress={() => onGenderChange('male')}
-                status={studentsUIStore.newStudentGender == 'male' ? 'checked' : 'unchecked'}
+                status={gender == 'male' ? 'checked' : 'unchecked'}
               />
               <Text>Male</Text>
             </Pressable>
@@ -45,14 +50,14 @@ const AddStudentDialog = ({onDone, onDismiss, onNameChange, onGenderChange}: Add
             >
               <RadioButton
                 value='female'
-                status={studentsUIStore.newStudentGender == 'female' ? 'checked' : 'unchecked'}
+                status={gender == 'female' ? 'checked' : 'unchecked'}
                 onPress={() => onGenderChange('female')}
               />
               <Text>Female</Text>
             </Pressable>
           </View>
           <Button onPress={onDone} mode='contained'>
-            <Text>ADD</Text>
+            <Text>{isUpdating ? 'UPDATE' : 'ADD'}</Text>
           </Button>
           <Button onPress={onDismiss} mode='outlined' style={{marginTop: 8}}>
             <Text>CANCEL</Text>

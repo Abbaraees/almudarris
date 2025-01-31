@@ -8,6 +8,7 @@ import { Tables } from '~/types'
 import { ActivityIndicator, IconButton } from 'react-native-paper'
 import studentDetailUIState from '~/stores/ui/StudentDetailUIState'
 import { observer } from 'mobx-react'
+import AddStudentDialog from '~/components/AddStudentDialog'
 
 const StudentDetail = () => {
   const { id } = useLocalSearchParams()
@@ -16,15 +17,18 @@ const StudentDetail = () => {
   useFocusEffect(useCallback(() => {
     if (typeof id === 'string') {
       studentDetailUIState.loadStudent(id)
-      const student = studentStore.students.filter(student => student.id == id)
-      if (student) {
-        setStudent(student[0])
-      } else {
-        setStudent(null)
-      }
+      loadStudent()
     }
-  }, [id]))
+  }, [id, studentDetailUIState.isUpdating]))
 
+  const loadStudent = () => {
+    const student = studentStore.students.filter(student => student.id == id)
+    if (student) {
+      setStudent(student[0])
+    } else {
+      setStudent(null)
+    }
+  }
 
   const handleNavigation = (feature: string) => {
     router.push(`/students/${id}/${feature}`)
@@ -48,7 +52,7 @@ const StudentDetail = () => {
                 <Text className="text-2xl font-bold">{student.name}</Text>
                 <View className='flex-row gap-8'>
                   <IconButton icon={'delete'} iconColor='orange' size={32} />
-                  <IconButton icon={'pencil'} iconColor='green' size={32} />
+                  <IconButton onPress={studentDetailUIState.showUpdateDialog} icon={'pencil'} iconColor='green' size={32} />
                 </View>
               
             </View>
@@ -68,6 +72,17 @@ const StudentDetail = () => {
           <View className="flex-1 justify-center items-center">
             <Text className="text-xl text-green-600">No student found</Text>
           </View>
+        )}
+        {studentDetailUIState.isUpdating && (
+          <AddStudentDialog
+            onDismiss={studentDetailUIState.hideUpdateDialog}
+            onDone={studentDetailUIState.handleUpdate}
+            onGenderChange={studentDetailUIState.setGender}
+            onNameChange={studentDetailUIState.setName}
+            name={studentDetailUIState.name}
+            gender={studentDetailUIState.gender}
+            isUpdating
+          />
         )}
       </Container>
     </>

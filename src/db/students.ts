@@ -20,7 +20,7 @@ export async function createStudent(name: string, gender: 'male' | 'female', tea
   return true
 }
 
-export async function updateStudent(id: string, name: string, gender: 'male' | 'female') {
+export async function updateStudent(id: string, name: string, gender: string) {
   try {
     const result = await db.update(studentsTable).set({
       name,
