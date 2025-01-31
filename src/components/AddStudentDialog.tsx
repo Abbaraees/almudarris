@@ -1,7 +1,6 @@
 import { View, Text, Pressable } from 'react-native'
 import React from 'react'
 import { Button, Modal, Portal, RadioButton, TextInput } from 'react-native-paper'
-import studentsUIStore from '~/stores/ui/StudentsUIStore'
 import { observer } from 'mobx-react'
 
 
@@ -19,7 +18,7 @@ const AddStudentDialog = ({onDone, onDismiss, onNameChange, onGenderChange, isUp
   return (
     <Portal>
       <Modal visible>
-        <View className='w-10/12 bg-white p-4 rounded-lg self-center'>
+        <View className='w-[90%] bg-white p-4 rounded-lg self-center'>
           <Text className='text-lg text-center mb-6'>{isUpdating ? 'Update Student Info' : `Add New Student`}</Text>
           <TextInput
             value={name}

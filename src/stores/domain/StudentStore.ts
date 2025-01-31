@@ -1,6 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import uuid from 'react-native-uuid';
-import { createStudent, getStudent, getStudents, updateStudent } from "~/db/students";
+import { createStudent, deleteStudent, getStudent, getStudents, updateStudent } from "~/db/students";
 
 import { Tables } from "~/types";
 
@@ -29,8 +28,15 @@ class StudentStore {
     
   }
 
-  removeStudent(id: string) {
-    this.students = this.students.filter((student) => student.id !== id);
+  async deleteStudent(id: string) {
+    const result = await deleteStudent(id);
+    if (result) {
+      await this.fetchStudents()
+      return true
+    }
+
+    return false
+
   }
 
   async updateStudent(id: string, name: string, gender: string) {

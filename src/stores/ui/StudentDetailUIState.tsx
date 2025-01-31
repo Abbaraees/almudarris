@@ -1,6 +1,7 @@
-import { Student, Tables } from "~/types";
+import { Tables } from "~/types";
 import studentStore from "../domain/StudentStore";
-import { makeAutoObservable, computed } from "mobx";
+import { makeAutoObservable } from "mobx";
+import { router } from "expo-router";
 
 class StudentDetailUIState {
   student: Tables<'students'> | undefined | null
@@ -21,32 +22,26 @@ class StudentDetailUIState {
     this.student = student[0]
   }
 
-  showUpdateDialog = () => {
-    this.isUpdating = true
-  }
-
-  hideUpdateDialog = () => {
-    this.isUpdating = false
-  }
+  toggleUpdateDialog = () => this.isUpdating = !this.isUpdating
 
   handleUpdate = async () => {
     const result = await studentStore.updateStudent(this.student?.id ?? '', this.name, this.gender)
     if (result) {
       this.loadStudent(this.student?.id ?? '')
     }
-    this.hideUpdateDialog()
+    this.toggleUpdateDialog()
   }
 
-  showDeleteDialog = () => {
-
+  toggleDeleteDialog = () => {
+    this.isDeleting = !this.isDeleting
   }
 
-  hideDeleDialog = () => {
-
-  }
-
-  handleDelete = () => {
-
+  handleDelete = async () => {
+    this.toggleDeleteDialog()
+    const result = await studentStore.deleteStudent(this.student?.id ?? '')
+    if (result) {
+      router.replace('/(tabs)/students')
+    }
   }
 
   setName = (name: string) => this.name = name

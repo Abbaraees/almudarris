@@ -1,14 +1,17 @@
 import { View, Text, Pressable } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
-import { Container } from '~/components/Container'
+import React, { useCallback, useState } from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { router, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router'
+import { ActivityIndicator, IconButton } from 'react-native-paper'
+import { observer } from 'mobx-react'
+
+import { Container } from '~/components/Container'
 import studentStore from '~/stores/domain/StudentStore'
 import { Tables } from '~/types'
-import { ActivityIndicator, IconButton } from 'react-native-paper'
 import studentDetailUIState from '~/stores/ui/StudentDetailUIState'
-import { observer } from 'mobx-react'
 import AddStudentDialog from '~/components/AddStudentDialog'
+import DeleteRecordModal from '~/components/DeleteRecordModal'
+
 
 const StudentDetail = () => {
   const { id } = useLocalSearchParams()
@@ -51,8 +54,8 @@ const StudentDetail = () => {
                 <MaterialCommunityIcons name='account-circle' size={128} color={'#4b5563'}/>
                 <Text className="text-2xl font-bold">{student.name}</Text>
                 <View className='flex-row gap-8'>
-                  <IconButton icon={'delete'} iconColor='orange' size={32} />
-                  <IconButton onPress={studentDetailUIState.showUpdateDialog} icon={'pencil'} iconColor='green' size={32} />
+                  <IconButton onPress={studentDetailUIState.toggleDeleteDialog} icon={'delete'} iconColor='#dc2626' size={32} />
+                  <IconButton onPress={studentDetailUIState.toggleUpdateDialog} icon={'pencil'} iconColor='#16a34a' size={32} />
                 </View>
               
             </View>
@@ -75,13 +78,20 @@ const StudentDetail = () => {
         )}
         {studentDetailUIState.isUpdating && (
           <AddStudentDialog
-            onDismiss={studentDetailUIState.hideUpdateDialog}
+            onDismiss={studentDetailUIState.toggleUpdateDialog}
             onDone={studentDetailUIState.handleUpdate}
             onGenderChange={studentDetailUIState.setGender}
             onNameChange={studentDetailUIState.setName}
             name={studentDetailUIState.name}
             gender={studentDetailUIState.gender}
             isUpdating
+          />
+        )}
+        { studentDetailUIState.isDeleting && (
+          <DeleteRecordModal
+            recordName={student?.name ?? ''}
+            onAccept={studentDetailUIState.handleDelete}
+            onReject={studentDetailUIState.toggleDeleteDialog}
           />
         )}
       </Container>
