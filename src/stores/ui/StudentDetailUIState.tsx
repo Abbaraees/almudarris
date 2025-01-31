@@ -13,7 +13,7 @@ class StudentDetailUIState {
 
   loadStudent = async (id: string) => {
     const student = studentStore.students.filter(student => student.id == id)
-    console.log(student)
+    
     this.student = student[0]
   }
 

@@ -13,7 +13,7 @@ export async function createStudent(name: string, gender: 'male' | 'female', tea
 
     await logTransaction('students', 'CREATE', result[0].id)
   } catch (error) {
-    console.log(error)
+    
     return false
   }
 
@@ -28,7 +28,7 @@ export async function updateStudent(id: string, name: string, gender: 'male' | '
     }).where(eq(studentsTable.id, id)).returning()
     await logTransaction('students', 'UPDATE', result[0].id)
   } catch (error) {
-    console.log(error)
+    
     return false
   }
 
@@ -40,7 +40,7 @@ export async function deleteStudent(id: string) {
     await db.delete(studentsTable).where(eq(studentsTable.id, id))
     await logTransaction('students', 'DELETE', id)
   } catch (error) {
-    console.log(error)
+    
     return false
   }
 

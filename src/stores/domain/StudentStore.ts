@@ -24,7 +24,7 @@ class StudentStore {
       const result = await createStudent(name, gender, teacher_id);
       result && this.fetchStudents();
     } catch (error) {
-      console.log(error)
+      
     }
     
   }
