@@ -17,3 +17,14 @@ Database['public']['Tables'][T]['Update'];
 
 export type Enums<T extends keyof Database['public']['Enums']> =
   Database['public']['Enums'][T];
+
+
+export type Attendance = {
+  id: string,
+  student_name: string,
+  date: string,
+  session: string,
+  student_id: string,
+  status: string,
+  completeness?: number
+}

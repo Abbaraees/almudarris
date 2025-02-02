@@ -20,3 +20,13 @@ export const transactionLogsTable = sqliteTable('transaction_logs', {
   created_at: text().default(sql`(CURRENT_TIMESTAMP)`),
   synched: integer({mode: 'boolean'}).default(false), 
 })
+
+
+export const attendanceTable = sqliteTable('attendance', {
+  id: text().primaryKey().$defaultFn(() => uuid.v4()),
+  date: text().notNull(),
+  student_id: text().notNull(),
+  status: text().notNull().default('ABSENT'),
+  completeness: integer().notNull().default(0),
+  session: text().notNull().default('EVENING')
+})

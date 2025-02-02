@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1738218822701,
-      "tag": "0000_premium_newton_destine",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1738245384654,
-      "tag": "0001_loose_sunspot",
+      "when": 1738479309011,
+      "tag": "0000_jittery_boom_boom",
       "breakpoints": true
     }
   ]
