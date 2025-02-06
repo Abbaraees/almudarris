@@ -10,6 +10,7 @@ import studentStore from "../domain/StudentStore";
 
 export default class TakeAttendanceUIState {
   attendance: Attendance[] = []
+  filteredAttendance: Attendance[] = []
   date = ''
   session = ''
   isModalVisible = false
@@ -24,6 +25,12 @@ export default class TakeAttendanceUIState {
     this.date = date
     this.session = session
     this.loadAttendance(date, session)
+  }
+
+
+  filterAttendance = (filter: string) => {
+    this.filteredAttendance = this.attendance
+      .filter(attendance => attendance.student_name.toLowerCase().includes(filter.toLowerCase()))
   }
 
   loadAttendance = async (date: string, session: string) => {
@@ -54,6 +61,7 @@ export default class TakeAttendanceUIState {
 
       this.attendance = newAttendance
     }
+    this.filterAttendance('')
   }
 
   logAttendance = async () => {

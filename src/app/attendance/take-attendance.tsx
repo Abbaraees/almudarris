@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
-import { Button, ActivityIndicator, Portal, Modal } from "react-native-paper";
+import { Button, ActivityIndicator, Portal, Modal, TextInput } from "react-native-paper";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import dayjs from "dayjs";
 import TakeAttendanceModal from "~/components/TakeAttendanceModal";
@@ -24,9 +24,16 @@ function StudentList() {
       <Text className="text-xl font-semibold text-center text-gray-800 mb-4">
         {session.toLocaleUpperCase()} Attendance - {dayjs(date).format('dddd DD MMMM, YYYY')}
       </Text>
+      <TextInput
+        mode="outlined"
+        placeholder="Search for a student"
+        onChangeText={takeAttendanceUIState.filterAttendance}
+        style={{marginVertical: 8, width: '80%', marginLeft: 'auto'}}
+      />
+        
       { takeAttendanceUIState.attendance.length > 0 ? (
         <FlatList
-          data={takeAttendanceUIState.attendance}
+          data={takeAttendanceUIState.filteredAttendance}
           // keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
