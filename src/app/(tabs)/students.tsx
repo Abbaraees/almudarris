@@ -80,6 +80,7 @@ const students = () => {
             onDismiss={studentsUIStore.hideDialog}
             onNameChange={studentsUIStore.setNewStudentName}
             onGenderChange={studentsUIStore.setNewStudentGender}
+            gender={studentsUIStore.newStudentGender}
           />
         )
       }
