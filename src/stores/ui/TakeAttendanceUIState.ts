@@ -73,6 +73,7 @@ export default class TakeAttendanceUIState {
     this.closeModal()
     const updatedAttendance = this.attendance.map(attendance => attendance.student_id === studentId ? {...attendance, status, completeness} : attendance)
     this.attendance = updatedAttendance
+    this.filterAttendance('')
   }
 
   openModal(student: Attendance) {

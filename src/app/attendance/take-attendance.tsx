@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { Button, ActivityIndicator, Portal, Modal, TextInput } from "react-native-paper";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
 import dayjs from "dayjs";
 import TakeAttendanceModal from "~/components/TakeAttendanceModal";
 import TakeAttendanceUIState from "~/stores/ui/TakeAttendanceUIState";
@@ -13,11 +13,26 @@ function StudentList() {
   const session = typeof sessionArg === 'string' ? sessionArg : sessionArg[0]
 
   const [takeAttendanceUIState, _] = useState(new TakeAttendanceUIState(date, session))
-
+  const navigation = useNavigation()
 
   useFocusEffect(useCallback(() => {
     takeAttendanceUIState.loadAttendance(date, session)
+    navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault()
+      takeAttendanceUIState.saveAttendance()
+      console.log("Back Pressed")
+      navigation.dispatch(e.data.action)
+    })
+
+    return () => {
+      navigation.removeListener('beforeRemove', (e) => {
+        console.log("Removed")
+      })
+    }
+
   }, [date, session]))
+
+
 
   return (
     <View className="flex-1 bg-gray-100 p-4">
