@@ -20,7 +20,6 @@ function StudentList() {
     navigation.addListener('beforeRemove', (e) => {
       e.preventDefault()
       takeAttendanceUIState.saveAttendance()
-      console.log("Back Pressed")
       navigation.dispatch(e.data.action)
     })
 

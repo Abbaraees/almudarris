@@ -69,7 +69,6 @@ export async function syncWithSupabase() {
         await db.update(transactionLogsTable)
           .set({ synched: true })
           .where(eq(transactionLogsTable.id, log.id));
-        console.log("Synced:", log.id);
       }
     }
 

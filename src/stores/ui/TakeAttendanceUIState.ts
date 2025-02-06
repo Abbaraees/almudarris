@@ -20,7 +20,6 @@ export default class TakeAttendanceUIState {
 
   constructor(date: string, session: string) {
     makeAutoObservable(this)
-    this.logAttendance()
 
     this.date = date
     this.session = session
@@ -64,11 +63,6 @@ export default class TakeAttendanceUIState {
     this.filterAttendance('')
   }
 
-  logAttendance = async () => {
-    const attendance = await db.select().from(attendanceTable)
-    console.log(attendance)
-  }
-
   markAttendance = (studentId: string, status: string, completeness: number) => {
     this.closeModal()
     const updatedAttendance = this.attendance.map(attendance => attendance.student_id === studentId ? {...attendance, status, completeness} : attendance)
@@ -100,7 +94,6 @@ export default class TakeAttendanceUIState {
       for (let record of this.attendance) {
         try {
           const result = await db.update(attendanceTable).set(record).where(eq(attendanceTable.id, record.id))
-          console.log("existing attendance updated", result)
         } catch (error) {
           console.log(error)
         }
