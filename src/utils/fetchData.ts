@@ -1,44 +1,74 @@
 import authStore from "~/stores/AuthStore"
 import { supabase } from "./supabase"
 import db from "~/db"
-import { studentsTable } from "~/db/schema"
-import studentStore from "~/stores/domain/StudentStore";
-
+import { tableConfigs } from "./TableConfig";
+import { eq } from "drizzle-orm";
 
 export const fetchDataFromSupabase = async () => {
-  try {
-    // Fetch data from Supabase
-    const { data: supabaseData, error } = await supabase
-      .from('students')
-      .select()
-      .eq('teacher_id', authStore.profile?.id ?? '');
+  const tables = ['students', 'attendance']
+  let newRecords = 0;
 
-    if (error) {
-      console.error('Supabase fetch error:', error);
-      return { status: 'error', message: 'Failed to fetch data from Supabase', error };
+  for (let table of tables) {
+    const config = tableConfigs[table]
+    if (!config) {
+      console.warn(`No config found for table: ${table}, skipping...`);
+      continue;
     }
 
-    // Fetch local SQLite data
-    const localData = await db.select().from(studentsTable);
+    const { localTable, remoteTable, primaryKey } = config;
 
-    // Convert local data IDs into a Set for faster lookup
-    const localIds = new Set(localData.map(l => l.id));
+    try {
+      // Fetch data from Supabase
+      const { data: remoteData, error } = await supabase
+        .from(remoteTable)
+        .select()
+        .eq('teacher_id', authStore.profile?.id ?? '');
+  
+      if (error) {
+        console.error('Supabase fetch error:', error);
+        continue; // Log the error and continue with the next table
+      }
+  
+      // Fetch local SQLite data
+      const localData = await db.select().from(localTable);
 
-    // Filter records that are missing locally
-    const missingRecords = supabaseData.filter(data => !localIds.has(data.id));
+      // Compare and sync data
+      const remoteIds = new Set(remoteData.map(item => item[primaryKey]));
+      const localIds = new Set(localData.map(item => item[primaryKey]));
 
-    // Insert missing records into local database
-    if (missingRecords.length > 0) {
-      await db.insert(studentsTable).values(missingRecords);
+      // Records to insert (exist in remote but not in local)
+      const toInsert = remoteData.filter(item => !localIds.has(item[primaryKey]));
+
+      // Records to update (exist in both)
+      const toUpdate = remoteData.filter(item => localIds.has(item[primaryKey]));
+
+      // Records to delete (exist in local but not in remote)
+      const toDelete = localData.filter(item => !remoteIds.has(item[primaryKey]));
+
+      // Perform operations
+      if (toInsert.length > 0) {
+        await db.insert(localTable).values(toInsert);
+        newRecords += toInsert.length;
+      }
+
+      for (const item of toUpdate) {
+        await db
+          .update(localTable)
+          .set(item)
+          .where(eq(localTable[primaryKey], item[primaryKey]));
+      }
+
+      for (const item of toDelete) {
+        await db
+          .delete(localTable)
+          .where(eq(localTable[primaryKey], item[primaryKey]));
+      }
+
+    } catch (err) {
+      console.error(`Error syncing table ${table}:`, err);
+      continue; // Log the error and continue with the next table
     }
-
-    const message = `Synced ${missingRecords.length} new records from Supabase`;
-    studentStore.fetchStudents()
-    console.log(message);
-
-    return { status: 'success', message };
-  } catch (err) {
-    console.error('Error in fetchDataFromSupabase:', err);
-    return { status: 'error', message: 'An unexpected error occurred', error: err };
   }
-};
+
+  return { status: 'success', message: `${newRecords} new records synced` };
+}

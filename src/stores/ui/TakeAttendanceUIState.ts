@@ -6,6 +6,8 @@ import db from "~/db";
 import { attendanceTable } from "~/db/schema";
 import { Attendance } from "~/types";
 import studentStore from "../domain/StudentStore";
+import attendanceStore from "../domain/AttendanceStore";
+import authStore from "../AuthStore";
 
 
 export default class TakeAttendanceUIState {
@@ -17,6 +19,7 @@ export default class TakeAttendanceUIState {
   selectedStudent: Attendance | null = null
   status = 'NEW'
   saving = false
+  modify = false
 
   constructor(date: string, session: string) {
     makeAutoObservable(this)
@@ -37,6 +40,9 @@ export default class TakeAttendanceUIState {
       .select()
       .from(attendanceTable)
       .where(and(eq(attendanceTable.session, session), eq(attendanceTable.date, date)))
+
+    console.log(`Date: ${date}, Session: ${session}`)
+    console.log(savedAttendance)
       
     if (savedAttendance.length > 0) {
       this.status = 'EXISTING'
@@ -68,6 +74,7 @@ export default class TakeAttendanceUIState {
     const updatedAttendance = this.attendance.map(attendance => attendance.student_id === studentId ? {...attendance, status, completeness} : attendance)
     this.attendance = updatedAttendance
     this.filterAttendance('')
+    this.modify = true
   }
 
   openModal(student: Attendance) {
@@ -81,11 +88,16 @@ export default class TakeAttendanceUIState {
   }
 
   saveAttendance = async () => {
+    if (!this.modify) {
+      return
+    }
     this.saving = true
-    if (this.status == 'NEW') {
+    if (this.status == 'NEW' && this.modify) {
       try {
-        const result = await db.insert(attendanceTable).values(this.attendance)
-        console.log("new attendance saved", result)
+        for (const attendance of this.attendance) {
+          const { student_id, status, completeness, date, session,} = attendance
+          const result = await attendanceStore.saveAttendance(student_id, status, completeness ?? 0, date, session, authStore.profile?.id ?? '')
+        }
       } catch (error) {
         console.log(error)
       }
@@ -93,7 +105,7 @@ export default class TakeAttendanceUIState {
     else {
       for (let record of this.attendance) {
         try {
-          const result = await db.update(attendanceTable).set(record).where(eq(attendanceTable.id, record.id))
+          const result = await attendanceStore.updateAttendance(record.id, record.status, record.completeness ?? 0)
         } catch (error) {
           console.log(error)
         }

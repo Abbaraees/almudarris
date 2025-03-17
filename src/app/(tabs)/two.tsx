@@ -6,7 +6,7 @@ import { Button, Modal, Portal, ActivityIndicator } from "react-native-paper";
 import { Container } from "~/components/Container";
 import authStore from "~/stores/AuthStore";
 import { fetchDataFromSupabase } from "~/utils/fetchData";
-import { syncWithSupabase } from "~/utils/syncService";
+import { syncAttendance, syncWithSupabase } from "~/utils/syncService";
 
 export default function Home() {
   const [isSyncing, setIsSyncing] = useState(false);
@@ -41,6 +41,9 @@ export default function Home() {
         </Button>
         <Button mode="outlined" onPress={() => handleAction(syncWithSupabase)} className="my-3">
           Upload Data
+        </Button>
+        <Button mode="outlined" onPress={() => handleAction(syncAttendance)} className="my-3">
+          Sync Attendance
         </Button>
         <Button
           className="my-3"

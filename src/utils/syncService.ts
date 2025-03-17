@@ -1,7 +1,10 @@
 import { eq } from "drizzle-orm";
 import db from "~/db";
-import { transactionLogsTable, studentsTable } from "~/db/schema";
+import { transactionLogsTable } from "~/db/schema";
 import { supabase } from "./supabase";
+import authStore from "~/stores/AuthStore";
+import { tableConfigs } from "./TableConfig";
+
 
 export async function syncWithSupabase() {
   try {
@@ -18,15 +21,18 @@ export async function syncWithSupabase() {
     let failedCount = 0;
 
     for (const log of unsyncedLogs) {
-      let record;
-      let success = true;
+      const config = tableConfigs[log.table_name];
+      if (!config) {
+        console.warn(`No config found for table: ${log.table_name}, skipping...`);
+        continue;
+      }
+
+      const { localTable, remoteTable, primaryKey } = config;
 
       // Fetch the actual record data from the local database
-      if (log.table_name === 'students') {
-        record = await db.select()
-          .from(studentsTable)
-          .where(eq(studentsTable.id, log.record_id));
-      }
+      const record = await db.select()
+        .from(localTable)
+        .where(eq(localTable[primaryKey], log.record_id));
 
       // If no record is found, skip this log
       if (!record || record.length === 0) {
@@ -38,34 +44,32 @@ export async function syncWithSupabase() {
 
       if (log.operations === 'CREATE') {
         const { error: insertError } = await supabase
-          .from(log.table_name)
-          .insert(record[0])
+          .from(remoteTable)
+          .insert({...record[0], teacher_id: authStore.profile?.id ?? ''})
           .single();
         error = insertError;
       } else if (log.operations === 'UPDATE') {
         const { error: updateError } = await supabase
-          .from(log.table_name)
+          .from(remoteTable)
           .update(record[0])
-          .eq('id', log.record_id)
+          .eq(primaryKey, log.record_id)
           .select();
         error = updateError;
       } else if (log.operations === 'DELETE') {
         const { error: deleteError } = await supabase
-          .from(log.table_name)
+          .from(remoteTable)
           .delete()
-          .eq('id', log.record_id)
+          .eq(primaryKey, log.record_id)
           .select();
         error = deleteError;
       }
 
       if (error) {
         console.error(`Failed to sync log ${log.id}:`, error);
-        success = false;
         failedCount++;
-      }
-
-      // Mark log as synced if successful
-      if (success) {
+      } 
+      else {
+        // Mark log as synced if successful
         await db.update(transactionLogsTable)
           .set({ synched: true })
           .where(eq(transactionLogsTable.id, log.id));
@@ -83,6 +87,9 @@ export async function syncWithSupabase() {
         failedCount 
       };
     }
+
+    // delete all synched transactions
+    await db.delete(transactionLogsTable).where(eq(transactionLogsTable.synched, true))
 
     return { status: 'success', message: 'All logs successfully synced' };
 

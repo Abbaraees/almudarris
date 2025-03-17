@@ -2,11 +2,11 @@ import { eq } from "drizzle-orm";
 import { makeAutoObservable } from "mobx";
 import db from "~/db";
 import { attendanceTable } from "~/db/schema";
-import { Attendance } from "~/types";
+import { Attendance, Tables } from "~/types";
 import logTransaction from "~/utils/transactionLogger";
 
 class AttendanceStore {
-  attendance: Attendance[] = []
+  attendance: Tables<'attendance'>[] = []
 
   constructor() {
     makeAutoObservable(this)
@@ -19,9 +19,9 @@ class AttendanceStore {
     this.attendance = attendance
   }
 
-  saveAttendance = async (student_id: string, status: string, completeness: number, date: string, session: string) => {
+  saveAttendance = async (student_id: string, status: string, completeness: number, date: string, session: string, teacher_id: string) => {
     try {
-      const result = await db.insert(attendanceTable).values({student_id, status, completeness, date, session}).returning()
+      const result = await db.insert(attendanceTable).values({student_id, status, completeness, date, session, teacher_id}).returning()
       logTransaction('attendance', 'CREATE', result[0].id)
     } catch (error) {
       return {status: 'error', message: 'An error occured', error}

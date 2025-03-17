@@ -46,6 +46,7 @@ export type Database = {
       }
       attendance: {
         Row: {
+          completeness: number | null
           created_at: string
           date: string | null
           id: string
@@ -55,6 +56,7 @@ export type Database = {
           teacher_id: string
         }
         Insert: {
+          completeness?: number | null
           created_at?: string
           date?: string | null
           id?: string
@@ -64,6 +66,7 @@ export type Database = {
           teacher_id: string
         }
         Update: {
+          completeness?: number | null
           created_at?: string
           date?: string | null
           id?: string
